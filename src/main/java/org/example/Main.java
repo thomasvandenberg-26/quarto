@@ -17,10 +17,10 @@ public class Main {
         Piece piece1 = new Piece();
         Piece piece2 = new Piece();;
 
-
-
         piece1.setCouleur("Blanc");
+        piece1.setForme("Carre");
         piece2.setCouleur("Noir");
+        piece2.setForme("Rond");
         pieces.add(piece1);
         pieces.add(piece2);
 
@@ -52,29 +52,55 @@ public class Main {
         plateau[ligne][colonne] = ""+ strPiece;
 
         afficherPlateau(plateau);
-        tourSuivant(plateau);
+        int i =0;
+        while(i < plateau.length)
+        {
+            if(comparerLigne(plateau, i)){
+                System.out.println("C'est gagné! ");
+                System.out.print("Voulez vous rejouer ? ");
+                String reponse = scanner.nextLine().trim();
+                if(reponse.equals("Oui ") || reponse.equals("oui") || reponse.equals("o"))
+                {
+                    plateau = new String[lignePlateau][colonnePlateau];
+                    afficherPlateau(plateau);
+                    tourSuivant(plateau);
+                }
+                else {
+                    break;
+                }
+            }
+            else{
+                tourSuivant(plateau);
+            }
+            i++;
+        }
+
     }
     public  static void tourSuivant( String[][] plateau)
-    {    System.out.println("Les pieces disponibles : ");
+    {   String strPiece;
+        System.out.println("Les pieces disponibles : ");
         for(Piece piece : pieces)
         {
-            System.out.println(" Piece "+ piece.getCouleur());
+            System.out.println(piece.getCouleur() + " " + piece.getForme());
+           ;
 
         }
-        System.out.println("Quel pièce donnez vous à votre adversaire ?");
-        String strPiece= scanner.nextLine().trim();
+        System.out.println("Quel couleur de piece donnez vous à votre adversaire ?");
+        String strCouleur= scanner.nextLine().trim();
+        System.out.println("Quel forme de piece donnez vous à votre adversaire ?");
+        String strForme= scanner.nextLine().trim();
+        strPiece = strCouleur + " " + strForme;
         boolean pieceTrouvee = false;
         for(Piece piece : pieces)
         {
-            if(strPiece.equals(piece.getCouleur())) {
+            if(piece.getCouleur().equals(strCouleur) && piece.getForme().equals(strForme)) {
                 System.out.println("ok");
                 pieceTrouvee = true;
-                break;
             }
         }
 
         if (!pieceTrouvee) {
-            System.out.println("La pièce " + strPiece + " n'a pas été trouvée.");
+            System.out.println("La pièce " + "remplir" + " n'a pas été trouvée.");
             return; // Sortir si la pièce n'est pas trouvée
         }
 
@@ -85,12 +111,33 @@ public class Main {
             System.out.println("Quelle colonne ?");
             int colonne = scanner.nextInt();
             scanner.nextLine();
+            if((colonne > 3 || ligne > 3))
+            {
+                System.out.println("Vous ne pouvez pas depasser 3");
+                tourSuivant(plateau);
+            }
 
             placerPiece(plateau, strPiece, ligne, colonne);
 
+    }
+    public static boolean comparerLigne(String[][] plateau, int ligne){
+
+             // [ligne][colonne]
+             // [0] = premiere colonne
+             String premierElement = plateau[ligne][0];
 
 
+             // j < plateau[ligne].length c'est pour pas dépasser la longueur de ligne
+             for(int j = 1; j < plateau[ligne].length; j++) {
 
+                 String[] mots = premierElement.split(" ");
+                 String mot1 = mots[0];
+                 String mot2 = mots[1];
+                 if (plateau[ligne][j] == null || !plateau[ligne][j].equals(premierElement)) {
+                     return false;
+                 }
+             }
+            return true;
 
     }
 }
