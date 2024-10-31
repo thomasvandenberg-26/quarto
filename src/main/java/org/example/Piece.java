@@ -5,6 +5,25 @@ public class Piece {
     private String couleur;
 
     private String forme;
+    private String taille;
+
+
+    private String texture;
+
+    public Piece(String couleur, String forme, String taille, String texture) {
+        this.couleur = couleur;
+        this.forme = forme;
+        this.taille = taille;
+        this.texture = texture;
+    }
+
+    public String getTaille() {
+        return taille;
+    }
+
+    public void setTaille(String taille) {
+        this.taille = taille;
+    }
 
     public String getCouleur() {
         return couleur;
@@ -22,14 +41,16 @@ public class Piece {
         this.forme = forme;
     }
 
-    public boolean isTrou() {
-        return trou;
+   public void setTexture(String texture) {
+        this.texture = texture;
+   }
+    public String getTexture() {
+        return texture;
+    }
+    @Override
+    public String toString() {
+        return couleur + " " + forme + " " + taille + " " + texture;
     }
 
-    public void setTrou(boolean trou) {
-        this.trou = trou;
-    }
-
-    private boolean trou;
 
 }
