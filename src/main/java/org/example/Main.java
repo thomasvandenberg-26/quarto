@@ -357,18 +357,41 @@ public class Main {
         return true;
     }
 
-    public static boolean comparerElement(String premierElement, String[] elementActuel)
+    public static boolean comparerElements(String[] elements)
     {
-        String[] splitPiece = premierElement.split(" ");
-        String couleur = splitPiece[0];
-        String forme = splitPiece[1];
-        String taille = splitPiece[2];
-        String texture = splitPiece[3];
+        String premierElement =null;
 
-        boolean couleurCommun = elementActuel[0].equals(couleur);
-        boolean formeCommun =  elementActuel[1].equals(forme);
-        boolean tailleCommun = elementActuel[2].equals(taille);
-        boolean textureCommun =  elementActuel[3].equals(texture);
+        for(String element : elements)
+        {
+            if (element != null && !element.isEmpty()) {
+                premierElement = element;
+                break;
+            }
+        }
+        if(premierElement == null)
+            return false;
+
+        String[] premierePiece = premierElement.split(" ");
+
+        boolean couleurCommun = true;
+        boolean formeCommun =  true;
+        boolean tailleCommun = true;
+        boolean textureCommun =  true;
+
+        for(String element : elements)
+        {
+            // un élement est vide, retourne faux
+            if (element == null || element.isEmpty()) return false;
+            String[] elementActuel = element.split(" ");
+
+            // Les variables restent true tant que l'élément actuel a la même caractéristique que la première pièce.
+// Elles passeront à false si une différence est détectée, et resteront false pour le reste de la boucle.
+            couleurCommun &= elementActuel[0].equals(premierePiece[0]);
+            formeCommun &= elementActuel[1].equals(premierePiece[1]);
+            tailleCommun &= elementActuel[2].equals(premierePiece[2]);
+            textureCommun &= elementActuel[3].equals(premierePiece[3]);
+
+        }
 
         return couleurCommun || formeCommun || tailleCommun || textureCommun;
     }
