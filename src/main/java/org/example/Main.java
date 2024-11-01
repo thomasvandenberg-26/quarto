@@ -124,27 +124,16 @@ public class Main {
         String forme = strSplitPiece[1].trim();
         String taille = strSplitPiece[2].trim();
         String texture = strSplitPiece[3].trim();
-        Piece pieceSupprime = null;
+
 
         // j'affiche le plateau à jour
         afficherPlateau(plateau);
 
-          if(comparerLigne(plateau, ligne)){
+          if(verifierVictoire(plateau)){
                 System.out.println("C'est gagné! ");
                 rejouer();
             }
-          if(comparerColonne(plateau, colonne)){
-                    System.out.println("C'est gagné! ");
-                    rejouer();
-          }
-          if(comparerDiagonalePrincipale(plateau)){
-              System.out.println("C'est gagné! ");
-              rejouer();
-          }
-        if(comparerDiagonaleSecondaire(plateau)){
-            System.out.println("C'est gagné! ");
-            rejouer();
-          }
+
             else{
                 // je parcours la liste des pieces
                 Iterator<Piece> iterator = pieces.iterator();
@@ -208,155 +197,54 @@ public class Main {
             placerPiece(plateau, strPiece, intLigne, intColonne, pieces);
 
     }
-    public static boolean comparerLigne(String[][] plateau, int ligne){
 
-        String premierElement = null;
-             // [ligne][colonne]
-             // [0] = premiere colonne 
-
-         int j = 0;
-         while(j < 3)
-        {
-            if(plateau[ligne][j] != null && !plateau[ligne][j].isEmpty())
-            {
-                premierElement = plateau[ligne][j];
-                break;
-            }
-            j++;
-
-        }
-         // si toutes les cases sont vides
-        if (premierElement == null) {
-            return false;
-        }
-             
-
-            // j < plateau[ligne].length c'est pour pas dépasser la longueur de ligne
-             for(int k = 0; k < plateau[ligne].length; k++) {
-
-                 if (plateau[ligne][k] == null || plateau[ligne][k].isEmpty()) {
-                     return false; // Passer à l'élément suivant
-                 }
-
-                 // Extraire les mots de l'élément courant
-                 String[] elementActuel = plateau[ligne][k].split(" ");
-
-                 boolean rep = comparerElement(premierElement, elementActuel);
-                 if(!rep)
-                 {
-                     return false;
-                 }
-             }
-        return true;
-    }
-    public static boolean comparerColonne(String[][] plateau, int colonne)
+    public static boolean verifierVictoire(String[][] plateau)
     {
-        String premierElement = null;
-        // [ligne][colonne]
-        // [0] = premiere colonne
-
-        int i = 0;
-        while(i < 3)
-        {
-            if(plateau[i][colonne] != null && !plateau[i][colonne].isEmpty())
-            {
-                premierElement = plateau[i][colonne];
-                break;
-            }
-            i++;
-
-        }
-        // si toutes les cases sont vides
-        if (premierElement == null) {
-            return false;
-        }
-        for(int j = 0; j < plateau.length ; j++ )
-        {
-            if (plateau[j][colonne] == null || plateau[j][colonne].isEmpty()) {
-                return false; // Passer à l'élément suivant
-            }
-
-            // Extraire les mots de l'élément courant
-            String[] elementActuel = plateau[j][colonne].split(" ");
-           boolean rep =  comparerElement(premierElement, elementActuel);
-           if(!rep)
-           {
-               return false;
-           }
-
-        }
-        return true;
-    }
-    public static boolean comparerDiagonalePrincipale(String[][] plateau)
-    {
-      String premierElement = null;
-        // diagonale principale
-        int x = 0;
-        int y = 0;
-        premierElement= plateau[0][0];
-        if(premierElement == null || premierElement.isEmpty())
-        {
-            x = x + 1;
-            y = y + 1;
-            premierElement= plateau[x][y];
-        }
-        if(premierElement == null)
-        {
-            return false;
-        }
-
-        for(int i = 0 ; i < plateau.length; i++)
-        {
-           // tout les éléments de la diagonale principale, l'indice ligne et l'indice colonne sont egaux
-            if (plateau[i][i] == null || plateau[i][i].isEmpty()) {
-                return false; // Passer à l'élément suivant
-            }
-                String[] elementActuel = plateau[i][i].split(" ");
-
-          boolean rep = comparerElement(premierElement, elementActuel);
-
-              if(!rep)
-              {
-                  return false;
-              }
-
-        }
-        return true;
-    }
-
-    public static boolean comparerDiagonaleSecondaire(String[][] plateau) {
-        String premierElement = null;
-
         int n = plateau.length;
+        // Verifier ligne
+
+         for(int i = 0; i < n; i++)
+         {
+             if(comparerElements(plateau[i]))
+             {
+                 return true;
+             }
+         }
+
+        // Verifier colonne
+
+        // Je parcours toutes les colonnes
+        for (int j = 0; j < n; j++) {
+            // tableau temporaire d'une colonne
+            String[] colonne = new String[n];
+            for (int i = 0; i < n; i++) {
+                colonne[i] = plateau[i][j]; // Extrait l'élément de la ligne i et de la colonne j
+                // tant que i n'est pas arrivé à 3
+            }
+            if (comparerElements(colonne)) {
+                return true; // Si une colonne est gagnante, retourner true
+            }
+        }
+
+        // Verifier Diagonale
+        String[] diagonalePrincipale = new String[n];
+        for(int i = 0 ; i < plateau.length; i++) {
+            diagonalePrincipale[i] = plateau[i][i];
+        }
+        if (comparerElements(diagonalePrincipale)) {
+            return true;
+        }
+
+        // Vérifier la diagonale secondaire
+        String[] diagonaleSecondaire = new String[n];
         for (int i = 0; i < n; i++) {
-            if (plateau[i][n - 1 - i] != null && !plateau[i][n - 1 - i].isEmpty()) {
-                premierElement = plateau[i][n - 1 - i]; // Premier élément non vide trouvé
-                break;
-            }
+            diagonaleSecondaire[i] = plateau[i][n - 1 - i];
         }
-        if (premierElement == null) {
-            return false; // Si toute la diagonale est vide, il n'y a rien à comparer
+        if (comparerElements(diagonaleSecondaire)) {
+            return true;
         }
-
-        for (int i = 0; i < n; i++) {
-
-
-            if (plateau[i][n - 1 - i] == null || plateau[i][n - 1 - i].isEmpty()) {
-                return false; // Passer à l'élément suivant
-            }
-            String[] elementActuel = plateau[i][n - 1 - i].split(" ");
-
-            boolean rep = comparerElement(premierElement, elementActuel);
-            // Comparer les caractéristiques avec la première pièce
-            if(!rep)
-            {
-                return false;
-            }
-
-        }
-        return true;
+        return false;
     }
-
     public static boolean comparerElements(String[] elements)
     {
         String premierElement =null;
