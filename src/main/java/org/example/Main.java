@@ -130,7 +130,6 @@ public class Main {
         afficherPlateau(plateau);
 
           if(verifierVictoire(plateau)){
-                System.out.println("C'est gagné! ");
                 rejouer();
             }
 
@@ -198,7 +197,7 @@ public class Main {
 
     }
 
-    public static boolean verifierVictoire(String[][] plateau)
+    public static Boolean verifierVictoire(String[][] plateau)
     {
         int n = plateau.length;
         // Verifier ligne
@@ -207,6 +206,7 @@ public class Main {
          {
              if(comparerElements(plateau[i]))
              {
+                 System.out.println("C'est gagné ! : Raison : Ligne " + i + " Complete");
                  return true;
              }
          }
@@ -222,6 +222,7 @@ public class Main {
                 // tant que i n'est pas arrivé à 3
             }
             if (comparerElements(colonne)) {
+                System.out.println("C'est gagné ! : Raison : Colonne " + j );
                 return true; // Si une colonne est gagnante, retourner true
             }
         }
@@ -232,6 +233,7 @@ public class Main {
             diagonalePrincipale[i] = plateau[i][i];
         }
         if (comparerElements(diagonalePrincipale)) {
+            System.out.println("C'est gagné ! : Raison : Diagonale Principal ");
             return true;
         }
 
@@ -241,7 +243,33 @@ public class Main {
             diagonaleSecondaire[i] = plateau[i][n - 1 - i];
         }
         if (comparerElements(diagonaleSecondaire)) {
+            System.out.println("C'est gagné ! : Raison : Diagonale Secondaire ");
             return true;
+        }
+
+        // Carre
+        String[] Carre = new String[n];
+        int tailleCarre = 2;
+
+        // Parcourir chaque carré 2x2
+        for (int i = 0; i < n; i += tailleCarre) {
+            for (int j = 0; j < n; j += tailleCarre) {
+                // Extraire les éléments du carré 2x2
+                String[] carre = new String[tailleCarre * tailleCarre];
+                int index = 0;
+
+                for (int x = i; x < i + tailleCarre; x++) {
+                    for (int y = j; y < j + tailleCarre; y++) {
+                        carre[index++] = plateau[x][y];
+                    }
+                }
+
+                // Vérifier si ce carré est gagnant
+                if (comparerElements(carre)) {
+                    System.out.println("C'est gagné ! : Raison : Carre ");
+                    return true; // Si un carré est gagnant, retourne true
+                }
+            }
         }
         return false;
     }
